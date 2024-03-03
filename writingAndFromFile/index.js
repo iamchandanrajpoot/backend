@@ -8,6 +8,7 @@ const server = http.createServer((req, res) => {
   if (parsedUrl.pathname === "/") {
     fs.readFile("message.txt", (err, data) => {
       if (err) {
+        // if file not exit
         res.writeHead(200, { "Content-Type": "text/html" });
         res.write(`
           <html>
