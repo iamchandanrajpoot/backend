@@ -49,7 +49,8 @@ const requestListner = (req, res) => {
 
     req.on("end", () => {
       body = Buffer.concat(body).toString();
-      let parseData = querystring.parse(body).message;
+      let parseData = body.split("=")[0];
+      //   let parseData = querystring.parse(body).message;
       //   console.log(parseData);
       fs.writeFile("message.txt", parseData, (err) => {
         if (err) {
