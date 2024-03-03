@@ -1,0 +1,16 @@
+{
+  "name": "writingandfromfile",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cleaningCode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node cleaningCode.js",
+    "start-server": "nodemon cleaningCode.js"
+  },
+  "author": "chandan singh",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

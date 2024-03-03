@@ -11,33 +11,33 @@ const server = http.createServer((req, res) => {
         // if file not exit
         res.writeHead(200, { "Content-Type": "text/html" });
         res.write(`
+            <html>
+              <head>
+                <title>welcome</title>
+              </head>
+              <body>
+                <form action="/form-submit" method="post">
+                  <input type="text" name="message"/>
+                  <button type="submit">send</button>
+                </form>
+              </body>
+            </html>`);
+        res.end();
+      } else {
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.write(`
           <html>
             <head>
               <title>welcome</title>
             </head>
             <body>
+              <h1>${data.toString() || ""}</h1>
               <form action="/form-submit" method="post">
                 <input type="text" name="message"/>
                 <button type="submit">send</button>
               </form>
             </body>
           </html>`);
-        res.end();
-      } else {
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.write(`
-        <html>
-          <head>
-            <title>welcome</title>
-          </head>
-          <body>
-            <h1>${data.toString() || ""}</h1>
-            <form action="/form-submit" method="post">
-              <input type="text" name="message"/>
-              <button type="submit">send</button>
-            </form>
-          </body>
-        </html>`);
         res.end();
       }
     });
