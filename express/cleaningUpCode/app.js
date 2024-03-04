@@ -1,14 +1,15 @@
 import bodyParser from "body-parser";
 import express from "express";
 
-import adminRoutes from "./admin";
-import shopRoutes from "./shop";
+import adminRoutes from "./admin.js";
+import shopRoutes from "./shop.js";
 
 const app = express();
 // body-parser middleware is used to parse body of incoming http request
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(adminRoutes);
+// filter admin product
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
