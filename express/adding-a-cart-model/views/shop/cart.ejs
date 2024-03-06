@@ -4,3 +4,22 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <%- include('../includes/end.ejs') %>
+
+       <main>
+        <% if(Object.keys(items).length > 0){ %>
+            <ul>
+               <li>
+                <p><%= items.products %></p>
+                <p><%= items.totalPrice %></p>
+               </li>
+            </ul>
+        <%} else {%>
+            <p>No Product in cart</p>
+        <%}%>
+    
+       </main>
+
+
+<%- include('../includes/end.ejs') %>
+      
+<!-- <%= %> -->

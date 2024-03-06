@@ -1,8 +1,12 @@
 const fs = require('fs');
 const path = require('path');
+const Product = require('./product');
+
+// import {fileURLToPath} from 'url'
+
 
 const p = path.join(
-  path.dirname(process.mainModule.filename),
+  path.dirname(require.main.filename),
   'data',
   'cart.json'
 );
@@ -36,5 +40,14 @@ module.exports = class Cart {
         console.log(err);
       });
     });
+  }
+
+  static getCartProduct(cb){
+    fs.readFile(p, (err, data)=>{
+      if(!err){
+        // Product.fetchAll(())
+        cb(JSON.parse(data))
+      }
+    })
   }
 };

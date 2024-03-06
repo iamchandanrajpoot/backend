@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const p = path.join(
-  path.dirname(process.mainModule.filename),
+  path.dirname(require.main.filename),
   'data',
   'products.json'
 );
@@ -40,9 +40,42 @@ module.exports = class Product {
   }
 
   static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(p => p.id === id);
+    Product.fetchAll(products => {
+      const product = products.find(product => product.id == id);
       cb(product);
     });
+  }
+
+  // edit product functionality
+  // static updateProductByID(id, cb){
+  //   Product.fetchAll(products=>{
+  //     const editProduct = products.find(product=> product.id = id);
+
+  //   })
+  // }
+
+  // edit prodcut functionality
+  static editproductbyID(id, cb){
+    Product.fetchAll((products)=>{
+      const remaingProducts =  products.filter(product => product.id !== id);
+      fs.writeFile(p, JSON.stringify(remaingProducts), err=>{
+        if(!err){
+         cb();
+        }
+      })
+    })
+  }
+  // delete prodcut functionality
+  static deleteproductbyID(id, cb){
+    Product.fetchAll((products)=>{
+      const remaingProducts =  products.filter(product => product.id !== id);
+      fs.writeFile(p, JSON.stringify(remaingProducts), err=>{
+        if(!err){
+          Product.fetchAll((products)=>{
+            cb(products);
+          })
+        }
+      })
+    })
   }
 };
