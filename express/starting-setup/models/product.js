@@ -32,8 +32,9 @@ module.exports = class Product {
       });
   }
 
-  static deleteById() {
-   
+  static deleteById(id) {
+    const sql = `DELETE FROM eshop.products WHERE id = ${id};`;
+    return db.execute(sql);
   }
 
   static fetchAll() {
