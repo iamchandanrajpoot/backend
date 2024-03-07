@@ -21,8 +21,8 @@ module.exports = class Product {
     return db.execute("SELECT * FROM eshop.products;")
   }
 
-  static findById() {
-
+  static findById(id) {
+    return db.execute(`SELECT * FROM eshop.products where id = ${id};`);
   }
   
 }
