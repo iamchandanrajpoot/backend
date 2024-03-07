@@ -20,16 +20,7 @@ module.exports = class Product {
       this.description,
       this.imageUrl,
     ];
-    db.execute(insertQuery, values)
-      .then(([rows, fields]) => {
-        console.log("Data inserted successfully:", rows);
-      })
-      .catch((err) => {
-        console.error("Error inserting data:", err);
-      })
-      .finally(() => {
-        db.end();
-      });
+    return db.execute(insertQuery, values);
   }
 
   static deleteById(id) {
