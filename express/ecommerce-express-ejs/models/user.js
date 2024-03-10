@@ -1,10 +1,9 @@
 const { DataTypes } = require("sequelize");
-
 const sequelize = require("../util/database");
-const User = require("./user");
+const Product = require("./product");
 
-const Product = sequelize.define(
-  "Product",
+const User = sequelize.define(
+  "User",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,27 +11,22 @@ const Product = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-    title:{
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    imageUrl: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    price: {
-      type: DataTypes.DOUBLE,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    }
   },
-  {
-    timestamps: false,
-  }
+  { timestamps: false }
 );
 
 
-module.exports = Product;
+  
+module.exports = User;

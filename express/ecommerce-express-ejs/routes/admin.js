@@ -1,24 +1,30 @@
-const path = require('path');
+const router = require("express").Router();
 
-const express = require('express');
+const adminController = require("../controllers/admin");
+const {
+  loginController,
+  registerController,
+} = require("../controllers/adminLoginReg");
 
-const adminController = require('../controllers/admin');
-
-const router = express.Router();
+const authorizeUser = require("../middlewares/userAuthorization");
+router.get("/login", adminController.getLoginPage);
+router.post("/login", loginController);
+router.post("/register", registerController);
+// router.get("/dashboard", authorizeUser,getDashboard);
 
 // /admin/add-product => GET
-router.get('/add-product', adminController.getAddProduct);
+router.get("/add-product", authorizeUser, adminController.getAddProduct);
 
 // /admin/products => GET
-router.get('/products', adminController.getProducts);
+router.get("/products",authorizeUser, adminController.getProducts);
 
 // /admin/add-product => POST
-router.post('/add-product', adminController.postAddProduct);
+router.post("/add-product", authorizeUser, adminController.postAddProduct);
 
-router.get('/edit-product/:productId', adminController.getEditProduct);
+router.get("/edit-product/:productId",authorizeUser, adminController.getEditProduct);
 
-router.post('/edit-product', adminController.postEditProduct);
+router.post("/edit-product",authorizeUser, adminController.postEditProduct);
 
-router.post('/delete-product', adminController.postDeleteProduct);
+router.post("/delete-product",authorizeUser, adminController.postDeleteProduct);
 
 module.exports = router;
