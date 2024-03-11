@@ -7,6 +7,12 @@ exports.getLoginPage = (req, res) => {
     path: "/admin/login",
   });
 };
+exports.getRegisterPage = (req, res) => {
+  res.render("admin/register", {
+    pageTitle: "register user",
+    path: "/admin/register",
+  });
+};
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -25,7 +31,7 @@ exports.postAddProduct = (req, res, next) => {
   User.findByPk(userId)
     .then((userInstance) => {
       // Use createUserProduct on the user instance
-      return userInstance.createUserProduct({
+      return userInstance.createProduct({
         title,
         imageUrl,
         price,
@@ -49,49 +55,65 @@ exports.getEditProduct = (req, res, next) => {
   User.findByPk(req.user.id)
     .then((userInstance) => {
       const prodId = req.params.productId;
-      return userInstance.getUserProducts({ where: { id: prodId } });
+      return userInstance.getProducts({ where: { id: prodId } });
     })
-    .then((product) => {
-      if (!product) {
+    .then((products) => {
+      if (!products) {
         return res.redirect("/");
       }
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
         editing: editMode,
-        product: product[0],
+        product: products[0],
       });
     })
     .then((err) => {
       console.log(err);
     });
 };
+exports.postEditProduct = (req, res) => {
+  console.log("reqbody");
+  console.log(req.body);
 
-exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
-  const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
-  const updatedProduct = {
-    prodId,
-    updatedTitle,
-    updatedImageUrl,
-    updatedDesc,
-    updatedPrice,
-  };
 
-  Product.destroy({ where: { id: prodId } })
-    .then(() => {
-      return updatedProduct;
+
+  // Find the user by id
+  User.findByPk(req.user.id)
+    .then((userInstance) => {
+      console.log("userInstance", userInstance);
+
+      // Find the existing product by id and update its attributes
+      return Product.update(
+        {
+          title: updatedTitle,
+          imageUrl: updatedImageUrl,
+          price: updatedPrice,
+          description: updatedDesc,
+        },
+        {
+          where: {
+            id: prodId,
+            UserId: req.user.id, 
+          },
+        }
+      );
     })
-    .then(() => {
+    .then((result) => {
+      console.log(result);
       res.redirect("/admin/products");
     })
     .catch((err) => {
       console.log(err);
+      res.status(500).send("Internal Server Error");
     });
 };
+
 
 exports.getProducts = (req, res) => {
   Product.findAll().then((products) => {

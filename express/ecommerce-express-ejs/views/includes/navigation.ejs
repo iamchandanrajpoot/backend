@@ -23,10 +23,29 @@
                 <a class="<%= path === '/admin/products' ? 'active' : '' %>" href="/admin/products">Admin Products
                 </a>
             </li>
+
+            <% if(true){ %>
             <li class="main-header__item">
                 <a class="<%= path === '/admin/login' ? 'active' : '' %>" href="/admin/login">Login
                 </a>
             </li>
+            <li class="main-header__item">
+                <a class="<%= path === '/admin/register' ? 'active' : '' %>" href="/admin/register">SignUp
+                </a>
+            </li>
+
+           <% } else{ %>
+            <li class="main-header__item">
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="dropbtn">User</button>
+                    <div id="myDropdown" class="dropdown-content">
+                      <a href="#home">Profile</a>
+                      <a href="#about">role</a>
+                      <a href="#contact">Logout</a>
+                    </div>
+                </div>
+            </li>
+            <%}%>
         </ul>
     </nav>
 </header>

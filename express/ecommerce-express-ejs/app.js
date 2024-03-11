@@ -2,17 +2,18 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
-
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")
-
-require("./models//associations")
 
 const errorController = require("./controllers/error");
 const sequelize = require("./util/database");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
+// associations
+require("./models/associations/user_product")
+require("./models/associations/user_cart")
+require("./models/associations/cart_product")
 
 const app = express();
 app.set("view engine", "ejs");
@@ -26,7 +27,6 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.get404);
-
 sequelize
   .sync()
   .then(() => {
@@ -34,6 +34,6 @@ sequelize
     app.listen(3000);
   })
   .catch((err) => {
-    console.log("err");
+    console.log(err);
   });
-// {force: true}
+

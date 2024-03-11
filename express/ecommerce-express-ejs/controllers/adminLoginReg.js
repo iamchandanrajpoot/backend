@@ -43,7 +43,7 @@ const registerController = async (req, res) => {
     // save data in database from req body send by user during registeration
     const result = await User.create(req.body);
     console.log(result);
-    res.json(result);
+    res.redirect("/admin/login");
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });

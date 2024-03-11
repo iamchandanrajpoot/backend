@@ -9,6 +9,7 @@ const {
 const authorizeUser = require("../middlewares/userAuthorization");
 router.get("/login", adminController.getLoginPage);
 router.post("/login", loginController);
+router.get("/register", adminController.getRegisterPage);
 router.post("/register", registerController);
 // router.get("/dashboard", authorizeUser,getDashboard);
 
