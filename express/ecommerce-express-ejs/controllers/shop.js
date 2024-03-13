@@ -1,6 +1,6 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
 const User = require("../models/user");
+const Order = require("../models/oder");
 
 exports.getProducts = (req, res, next) => {
   Product.findAll()
@@ -47,14 +47,8 @@ exports.getCart = async (req, res) => {
     const userInstance = await User.findByPk(req.user.id);
     const cartInstance = await userInstance.getCart();
     const cartProducts = await cartInstance.getProducts();
-
-    // const result =[];
-    // cartProducts.forEach(product => {
-    //   result.push([cartProducts.title, product.CartItem.quantity]);
-    // });
-
     console.log("tfy ouy uupiip");
-    console.log(cartProducts);
+    // console.log(cartProducts);
     res.render("shop/cart", {
       path: "/cart",
       pageTitle: "Your Cart",
@@ -73,19 +67,19 @@ exports.postCart = async (req, res) => {
     if (!cartInstance) {
       cartInstance = await userInstance.createCart();
     }
-    const products = await cartInstance.getProducts({
+    const productInCartOfGivenId = await cartInstance.getProducts({
       where: { id: product.id },
     });
     let quantity = 0;
-    if (products.length > 0) {
-      quantity = products[0].CartItem.quantity + 1;
-      // Update the existing cart item with the new quantity
+    if (productInCartOfGivenId.length > 0) {
+      quantity = productInCartOfGivenId[0].CartItem.quantity + 1;
+      console.log("product in cart");
+      console.log(productInCartOfGivenId);
       await cartInstance.addProduct(product, {
         through: { quantity },
       });
     } else {
       quantity = 1;
-      // Add the product to the cart with the initial quantity
       await cartInstance.addProduct(product, {
         through: { quantity },
       });
@@ -114,11 +108,49 @@ exports.postCartDeleteProduct = async (req, res) => {
   }
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-  });
+exports.postOrder = async (req, res) => {
+  try {
+    const userInstance = await User.findByPk(req.user.id);
+    const cartInstance = await userInstance.getCart();
+    const itemsInCart = await cartInstance.getProducts();
+    const orderInstance = await Order.create();
+    for (let item of itemsInCart) {
+      let quantity = item.CartItem.quantity;
+      await orderInstance.addProduct(item, { through: { quantity } });
+    }
+    userInstance.addOrder(orderInstance);
+    cartInstance.setProducts(null);
+    res.redirect("/oders");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  try {
+    const userInstance = await User.findByPk(req.user.id);
+    const orderInstances = await userInstance.getOrders();
+
+    // oders
+    const userOrders = [];
+    for (let orderInstance of orderInstances) {
+      console.log("oderinsatanc", orderInstance)
+      const orderItems = await orderInstance.getProducts();
+      // console.log(orderItems)
+      userOrders.push(orderItems);
+      console.log("oder",orderItems)
+    }
+
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "My Oders",
+      orders: userOrders,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
 };
 
 exports.getCheckout = (req, res, next) => {

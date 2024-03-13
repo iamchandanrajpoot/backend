@@ -4,6 +4,7 @@ const adminController = require("../controllers/admin");
 const {
   loginController,
   registerController,
+  logoutController,
 } = require("../controllers/adminLoginReg");
 
 const authorizeUser = require("../middlewares/userAuthorization");
@@ -11,6 +12,7 @@ router.get("/login", adminController.getLoginPage);
 router.post("/login", loginController);
 router.get("/register", adminController.getRegisterPage);
 router.post("/register", registerController);
+router.get("/logout", logoutController)
 // router.get("/dashboard", authorizeUser,getDashboard);
 
 // /admin/add-product => GET

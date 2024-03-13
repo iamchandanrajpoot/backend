@@ -14,6 +14,8 @@ const shopRoutes = require("./routes/shop");
 require("./models/associations/user_product")
 require("./models/associations/user_cart")
 require("./models/associations/cart_product")
+require("./models/associations/user_order")
+require("./models/associations/oder_product")
 
 const app = express();
 app.set("view engine", "ejs");
@@ -29,11 +31,12 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 sequelize
   .sync()
+  // .sync({force: true})
   .then(() => {
     console.log("Databasse synced");
     app.listen(3000);
   })
   .catch((err) => {
-    console.log(err);
+    console.log(err); 
   });
 

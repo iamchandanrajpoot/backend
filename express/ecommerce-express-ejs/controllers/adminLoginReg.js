@@ -55,4 +55,14 @@ const getDashboard = (req, res) => {
   res.json({ message: "welcome in dashboard" });
 };
 
-module.exports = { loginController, registerController, getDashboard };
+const logoutController = (req, res) => {
+  res.clearCookie("authToken");
+  res.redirect("/");
+};
+
+module.exports = {
+  loginController,
+  registerController,
+  getDashboard,
+  logoutController,
+};
