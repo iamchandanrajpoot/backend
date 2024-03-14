@@ -9,6 +9,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        user: null
       });
     })
     .catch((err) => {
@@ -16,7 +17,7 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = (req, res) => {
   const prodId = req.params.productId;
   Product.findOne({ where: { id: prodId } }).then((product) => {
     // console.log(row);
@@ -24,6 +25,7 @@ exports.getProduct = (req, res, next) => {
       product: product,
       pageTitle: product.title,
       path: "/products",
+      user: null
     });
   });
 };
@@ -35,6 +37,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        user:null
       });
     })
     .catch((err) => {
@@ -53,6 +56,7 @@ exports.getCart = async (req, res) => {
       path: "/cart",
       pageTitle: "Your Cart",
       products: cartProducts,
+      user: req.user
     });
   } catch (error) {
     console.log(error);
@@ -146,6 +150,7 @@ exports.getOrders = async (req, res) => {
       path: "/orders",
       pageTitle: "My Oders",
       orders: userOrders,
+      user:req.user
     });
   } catch (error) {
     console.log(error);

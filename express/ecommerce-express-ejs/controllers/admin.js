@@ -5,12 +5,14 @@ exports.getLoginPage = (req, res) => {
   res.render("admin/login", {
     pageTitle: "login user",
     path: "/admin/login",
+    user: null
   });
 };
 exports.getRegisterPage = (req, res) => {
   res.render("admin/register", {
     pageTitle: "register user",
     path: "/admin/register",
+    user:null
   });
 };
 
@@ -19,6 +21,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    user:req.user
   });
 };
 
@@ -66,6 +69,7 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: products[0],
+        user: req.user
       });
     })
     .then((err) => {
@@ -75,14 +79,11 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res) => {
   console.log("reqbody");
   console.log(req.body);
-
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
-
-
   // Find the user by id
   User.findByPk(req.user.id)
     .then((userInstance) => {
@@ -121,6 +122,7 @@ exports.getProducts = (req, res) => {
       prods: products,
       pageTitle: "Admin Products",
       path: "/admin/products",
+      user:req.user
     });
   });
 };

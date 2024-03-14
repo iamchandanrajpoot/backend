@@ -12,8 +12,9 @@ router.get("/login", adminController.getLoginPage);
 router.post("/login", loginController);
 router.get("/register", adminController.getRegisterPage);
 router.post("/register", registerController);
-router.get("/logout", logoutController)
 // router.get("/dashboard", authorizeUser,getDashboard);
+
+router.get("/logout", authorizeUser,logoutController)
 
 // /admin/add-product => GET
 router.get("/add-product", authorizeUser, adminController.getAddProduct);

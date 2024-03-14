@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-// const secret_key = process.env.JWT_SECRET_KEY;
+// const secret_key = process.env.JWT_SECRET_KEY
 
 const secret_key = process.env.JWT_SECRET_KEY;
 const loginController = async (req, res) => {
@@ -10,12 +10,13 @@ const loginController = async (req, res) => {
       res.status(400).json({ message: "enter login details first" });
     }
     // get login credentials
+  
     const { username, password } = req.body;
     const user = await User.findOne({ where: { username } });
     console.log(user);
 
     if (!user) {
-      res.status(401).json({ message: "invalid credentials" });
+      res.status(401).json({ message: "invalid username or password" });
     }
 
     // compare name and password with password saved in database by bcryt
@@ -29,6 +30,8 @@ const loginController = async (req, res) => {
       // res.json({token})
       res.cookie("authToken", token, { maxAge: 3600000, httpOnly: true });
       res.redirect("/admin/products");
+    }else{
+      res.json({message: "wrong password"})
     }
   } catch (error) {
     console.log(error);
