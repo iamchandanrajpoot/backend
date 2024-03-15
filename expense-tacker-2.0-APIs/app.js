@@ -13,6 +13,7 @@ app.use("/user", userRouter);
 
 sequelize
   .sync()
+  // .sync({force: true})
   .then(() => {
     console.log("models synced ");
     app.listen(4000);

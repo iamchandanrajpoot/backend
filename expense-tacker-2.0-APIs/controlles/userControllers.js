@@ -1,10 +1,11 @@
 const User = require("../models/userModel");
-const { use } = require("../routes/userRoutes");
+const bcrypt = require("bcrypt");
 
 exports.postRegister = async (req, res) => {
   try {
+    const { name, email, password } = req.body;
     const isAlreadyRegister = await User.findOne({
-      where: { email: req.body.email },
+      where: { email: email },
     });
     if (isAlreadyRegister) {
       console.log("already a user");
@@ -12,7 +13,9 @@ exports.postRegister = async (req, res) => {
         message: `already register with this email ${req.body.email}`,
       });
     } else {
-      await User.create(req.body);
+      const hashPassword = await bcrypt.hash(password, 10);
+      console.log(hashPassword);
+      await User.create({ name: name, email: email, password: hashPassword });
       res.json({ message: "succussfully register" });
     }
   } catch (error) {
@@ -28,13 +31,11 @@ exports.postLogin = async (req, res) => {
     if (!user) {
       res.status(404).json({ message: "User not found" });
     } else {
-      if (password !== user.password) {
+      if (!(await bcrypt.compare(password, user.password))) {
         res.status(401).json({ message: "User not authorized" });
+      } else {
+        res.status(200).json({ message: "successfully login" });
       }
-    }
-    if (user && user.password == password) {
-      console.log(user);
-      res.status(200).json({ message: "successfully login" });
     }
   } catch (error) {
     console.log(error);
