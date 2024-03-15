@@ -6,25 +6,28 @@ exports.postRegister = async (req, res) => {
       where: { email: req.body.email },
     });
     if (isAlreadyRegister) {
-      res.json({ message: "already register with this email" });
+      console.log("already a user")
+      res.json({ message: `already register with this email ${req.body.email}`});
+    } else {
+      await User.create(req.body);
+      res.json({ message: "succussfully register" });
     }
-    await User.create(req.body);
-    res.json({ message: "succussfully register" });
   } catch (error) {
-    console.log(error);
+    console.log(error); 
     res.json({ message: "internal server error" });
   }
 };
 
-exports.postLogin = async (req, res) => {
+exports.postLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email: email } });
     if (!user || user.password !== password) {
-      res.status(401).json({ message: "ivalalid email or password" });
+      res.status(401).json({ message: "Invalalid email or password" });
     } else {
+      console.log(user);
       res.status(200).json({ message: "successfully login" });
-      next();
+      // next();
     }
   } catch (error) {
     console.log(error);
