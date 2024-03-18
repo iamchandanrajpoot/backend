@@ -1,12 +1,15 @@
-const Expense = require("../models/expenseModel");
+// const Expense = require("../models/expenseModel");
+const User = require("../models/userModel");
 
 exports.postExpense = async (req, res) => {
   try {
+    console.log("i am comming inside post request")
+    const userInstance = await User.findByPk(req.user.id);
     const { expendicture, description, category } = req.body;
     if (!expendicture || !description || !category) {
-      res.json({ message: "please enter all fields" });
+      res.json({ message: "Please enter all fields" });
     }
-    const expense = await Expense.create({
+    const expense = await userInstance.createExpense({
       expendicture,
       description,
       category,
@@ -20,7 +23,8 @@ exports.postExpense = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll();
+    const userInstance = await User.findByPk(req.user.id);
+    const expenses = await userInstance.getExpenses();
     if (expenses) {
       res.status(200).json(expenses);
     }
@@ -31,10 +35,10 @@ exports.getExpenses = async (req, res) => {
 };
 exports.getExpenseById = async (req, res) => {
   try {
-    const expense = await Expense.findOne({
-      where: { id: req.params.expenseId },
+    const userInstance = await User.findByPk(req.user.id);
+    const expenses = await userInstance.getExpenses( {where: { id: req.params.expenseId },
     });
-    res.status(200).json(expense);
+    res.status(200).json(expenses[0]);
   } catch (error) {
     console.log(error);
     res.satatus(500).json({ message: "internal server error" });
@@ -42,11 +46,16 @@ exports.getExpenseById = async (req, res) => {
 };
 exports.deleteExpenseById = async (req, res) => {
   try {
-    const response = await Expense.destroy({
-      where: { id: req.params.expenseId },
+    const userInstance = await User.findByPk(req.user.id);
+    const expenses = await userInstance.getExpenses( {where: { id: req.params.expenseId },
     });
-    if (response) {
-      res.json({ message: "deleted" });
+    
+    const deleteResponse = await expenses[0].destroy();
+
+    if (deleteResponse) {
+      return res.json({ message: "Deleted" });
+    } else {
+      return res.status(500).json({ message: "Failed to delete expense" });
     }
   } catch (error) {
     console.log(error);

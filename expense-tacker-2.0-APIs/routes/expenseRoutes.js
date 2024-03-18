@@ -1,11 +1,17 @@
 const { Router } = require("express");
-const { postExpense, getExpenses, getExpenseById, deleteExpenseById } = require("../controlles/expenseController");
+const {
+  postExpense,
+  getExpenses,
+  getExpenseById,
+  deleteExpenseById,
+} = require("../controlles/expenseController");
+const autherizeUser = require("../middlewares/autherizeUser");
 
-const router =Router();
+const router = Router();
 
-router.post("/add-expense", postExpense);
-router.get("/add-expense", getExpenses);
-router.get("/add-expense/:expenseId", getExpenseById);
-router.delete("/add-expense/:expenseId", deleteExpenseById);
+router.post("/add-expense", autherizeUser, postExpense);
+router.get("/expenses", autherizeUser, getExpenses);
+router.get("/expenses/:expenseId", autherizeUser, getExpenseById);
+router.delete("/expenses/:expenseId", autherizeUser, deleteExpenseById);
 
 module.exports = router;

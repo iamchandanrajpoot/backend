@@ -1,5 +1,6 @@
-const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 exports.postRegister = async (req, res) => {
   try {
@@ -34,7 +35,19 @@ exports.postLogin = async (req, res) => {
       if (!(await bcrypt.compare(password, user.password))) {
         res.status(401).json({ message: "User not authorized" });
       } else {
-        res.status(200).json({ message: "successfully login" });
+        jwt.sign(
+          { id: user.id, email: user.email },
+          "secretkey",
+          (err, token) => {
+            if (!err) {
+              res
+                .status(200)
+                .json({ message: "successfully login", token: token});
+            } else {
+              console.log(err);
+            }
+          }
+        );
       }
     }
   } catch (error) {
