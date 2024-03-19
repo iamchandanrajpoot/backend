@@ -1,6 +1,8 @@
 const razorpay = require("../config/razarpay");
 const User = require("../models/userModel");
 const verifyPaymentStatus = require("../utils/verifyPayments");
+const Expense = require("../models/expenseModel");
+const sequelize = require("../config/dbConfig");
 
 exports.purchasePremium = async (req, res) => {
   try {
@@ -19,7 +21,7 @@ exports.purchasePremium = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Create order 
+    // Create order
     const createOrderRes = await userInstance.createOrder({
       orderId: order.id,
       status: "PENDING",
@@ -37,11 +39,10 @@ exports.purchasePremium = async (req, res) => {
   }
 };
 
-
 exports.updateTransactionStatus = async (req, res) => {
   try {
-    const { order_id, payment_id, status} = req.body;
-    console.log(req.body)
+    const { order_id, payment_id, status } = req.body;
+    console.log(req.body);
 
     // Find the user instance
     const userInstance = await User.findByPk(req.user.id);
@@ -50,7 +51,9 @@ exports.updateTransactionStatus = async (req, res) => {
     }
 
     // Get the order associated with the user
-    const userOrders = await userInstance.getOrders({ where: { orderId: order_id } });
+    const userOrders = await userInstance.getOrders({
+      where: { orderId: order_id },
+    });
     if (!userOrders || userOrders.length === 0) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -58,14 +61,14 @@ exports.updateTransactionStatus = async (req, res) => {
     const isPaymentSuccessful = await verifyPaymentStatus(payment_id);
     if (!isPaymentSuccessful) {
       // Payment failed, update order status to "FAILED"
-      await userOrders[0].update({ status: status});
+      await userOrders[0].update({ status: status });
       return res.status(400).json({ message: "Payment failed" });
     }
 
     // Payment successful, update order status to "SUCCESSFUL" and user premium status
     await Promise.all([
       userOrders[0].update({ paymentId: payment_id, status: status }),
-      userInstance.update({ isPremiumUser: true })
+      userInstance.update({ isPremiumUser: true }),
     ]);
 
     res.status(202).json({ message: "Transaction successful" });
@@ -75,24 +78,22 @@ exports.updateTransactionStatus = async (req, res) => {
   }
 };
 
-
-exports.getLeaderBoardData = async(req, res)=>{
+exports.getLeaderBoardData = async (req, res) => {
   try {
-    const users =   await User.findAll({where: {isPremiumUser: true}});
-    console.log(users);
-    const leaderBoardData = [];
-    for(let userInstance of users){
-      const expenses = await userInstance.getExpenses();
-      let totalExpense= 0;
-      expenses.forEach(expense => {
-        totalExpense += parseInt(expense.expendicture);
-      });
-      leaderBoardData.push({name: userInstance.name, totalExpense: totalExpense});
-    }
+    const leaderBoardData = await User.findAll({
+      attributes: [
+        "id",
+        "name",
+        [sequelize.fn("sum", sequelize.col("expendicture")), "totalExpense"],
+      ],
+      include: [{ model: Expense, attributes: [] }],
+      group: ["User.id"],
+      order: [[sequelize.literal("totalExpense"), "DESC"]],
+    });
     console.log(leaderBoardData);
     res.status(200).json(leaderBoardData);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({message: "internal server error"})
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
