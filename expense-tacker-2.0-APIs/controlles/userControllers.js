@@ -36,7 +36,7 @@ exports.postLogin = async (req, res) => {
         res.status(401).json({ message: "User not authorized" });
       } else {
         jwt.sign(
-          {id: user.id},
+          {id: user.id, isPremiumUser: user.isPremiumUser},
           "secretkey",
           (err, token) => {
             if (!err) {
@@ -55,3 +55,15 @@ exports.postLogin = async (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 };
+
+exports.getUser = async(req, res)=>{
+  try {
+  const user =   await User.findByPk(req.user.id);
+  console.log("control comes inside getUser")
+  console.log(user)
+  res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "internal server error"})
+  }
+}
