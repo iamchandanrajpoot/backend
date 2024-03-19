@@ -36,7 +36,7 @@ exports.postLogin = async (req, res) => {
         res.status(401).json({ message: "User not authorized" });
       } else {
         jwt.sign(
-          { id: user.id, email: user.email },
+          {id: user.id},
           "secretkey",
           (err, token) => {
             if (!err) {
