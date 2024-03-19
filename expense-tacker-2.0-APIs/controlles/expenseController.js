@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 
 exports.postExpense = async (req, res) => {
   try {
-    console.log("i am comming inside post request")
+    console.log("i am comming inside post request");
     const userInstance = await User.findByPk(req.user.id);
     const { expendicture, description, category } = req.body;
     if (!expendicture || !description || !category) {
@@ -13,6 +13,9 @@ exports.postExpense = async (req, res) => {
       expendicture,
       description,
       category,
+    });
+    await userInstance.update({
+      totalExpense: parseInt(userInstance.totalExpense) + parseInt(expendicture),
     });
     res.status(201).json(expense);
   } catch (error) {
@@ -30,13 +33,14 @@ exports.getExpenses = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.satatus(500).json({ message: "internal server error" });
+    res.status(500).json({ message: "internal server error" });
   }
 };
 exports.getExpenseById = async (req, res) => {
   try {
     const userInstance = await User.findByPk(req.user.id);
-    const expenses = await userInstance.getExpenses( {where: { id: req.params.expenseId },
+    const expenses = await userInstance.getExpenses({
+      where: { id: req.params.expenseId },
     });
     res.status(200).json(expenses[0]);
   } catch (error) {
@@ -47,9 +51,10 @@ exports.getExpenseById = async (req, res) => {
 exports.deleteExpenseById = async (req, res) => {
   try {
     const userInstance = await User.findByPk(req.user.id);
-    const expenses = await userInstance.getExpenses( {where: { id: req.params.expenseId },
+    const expenses = await userInstance.getExpenses({
+      where: { id: req.params.expenseId },
     });
-    
+
     const deleteResponse = await expenses[0].destroy();
 
     if (deleteResponse) {
