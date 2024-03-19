@@ -74,3 +74,25 @@ exports.updateTransactionStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+exports.getLeaderBoardData = async(req, res)=>{
+  try {
+    const users =   await User.findAll({where: {isPremiumUser: true}});
+    console.log(users);
+    const leaderBoardData = [];
+    for(let userInstance of users){
+      const expenses = await userInstance.getExpenses();
+      let totalExpense= 0;
+      expenses.forEach(expense => {
+        totalExpense += parseInt(expense.expendicture);
+      });
+      leaderBoardData.push({name: userInstance.name, totalExpense: totalExpense});
+    }
+    console.log(leaderBoardData);
+    res.status(200).json(leaderBoardData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "internal server error"})
+  }
+}
