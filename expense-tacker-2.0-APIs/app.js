@@ -10,9 +10,11 @@ const expenseRouter = require("./routes/expenseRoutes");
 const purchaseRouter = require("./routes/purchaseRoutes");
 const forgetPswRouter = require("./routes/forgetPswRoutes");
 
+
 // associations
 require("./models/associations/use_expense");
 require("./models/associations/user_order");
+require("./models/associations/user_ForgotPasswordRequest")
 
 const app = express();
 app.use(cors());
@@ -29,7 +31,6 @@ sequelize
   .sync()
   // .sync({force: true})
   .then(() => {
-    console.log("brevo api key", process.env.BREVO_API_KEY);
     console.log("models synced ");
     app.listen(4000);
   })
