@@ -1,6 +1,8 @@
-// const Expense = require("../models/expenseModel");
+const uuid = require("uuid");
 const sequelize = require("../config/dbConfig");
 const User = require("../models/userModel");
+const uploadToS3 = require("../utils/uploadFileToS3");
+const getExpensesOfUser = require("../utils/getExpenseOfUser");
 
 exports.postExpense = async (req, res) => {
   const t = await sequelize.transaction();
@@ -69,14 +71,50 @@ exports.deleteExpenseById = async (req, res) => {
     });
     const updatedExpense =
       parseInt(userInstance.totalExpense) - parseInt(expenses[0].expendicture);
-    await expenses[0].destroy({transaction: t});
-    await userInstance.update({ totalExpense: updatedExpense }, {transaction: t});
+    await expenses[0].destroy({ transaction: t });
+    await userInstance.update(
+      { totalExpense: updatedExpense },
+      { transaction: t }
+    );
 
-    await t.commit()
+    await t.commit();
     return res.json({ message: "Deleted" });
   } catch (error) {
     await t.rollback();
     // console.log(error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+// download expense
+
+exports.downloadExpense = async (req, res) => {
+  try {
+    const userInstance = await User.findByPk(req.user.id);
+    if (userInstance.isPremiumUser) {
+      const expenses = await getExpensesOfUser(req);
+      const stringifiedExpenses = JSON.stringify(expenses);
+      const filename = "expense" + uuid.v4() + ".txt";
+      const data = await uploadToS3(stringifiedExpenses, filename);
+
+      await userInstance.createDownloadFile({ fileUrl: data.Location });
+
+      res.status(201).json({ fileUrl: data.Location, success: true });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getDownloadedfiles = async (req, res) => {
+  try {
+    const userInstance = await User.findByPk(req.user.id);
+    if (userInstance.isPremiumUser) {
+      const downloadFiles = await userInstance.getDownloadFiles();
+      res.status(200).json({ downloadFiles, success: true });
+    }
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "internal server error" });
   }
 };

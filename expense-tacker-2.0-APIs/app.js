@@ -15,6 +15,7 @@ const forgetPswRouter = require("./routes/forgetPswRoutes");
 require("./models/associations/use_expense");
 require("./models/associations/user_order");
 require("./models/associations/user_ForgotPasswordRequest")
+require("./models/associations/user_downloadFiles")
 
 const app = express();
 app.use(cors());
@@ -26,7 +27,7 @@ app.use("/api", expenseRouter);
 app.use("/purchase", purchaseRouter);
 app.use("/password", forgetPswRouter);
 
-// xyz comment
+
 sequelize
   .sync()
   // .sync({force: true})

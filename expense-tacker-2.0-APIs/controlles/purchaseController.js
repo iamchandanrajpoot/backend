@@ -1,8 +1,6 @@
 const razorpay = require("../config/razarpay");
 const User = require("../models/userModel");
 const verifyPaymentStatus = require("../utils/verifyPayments");
-const Expense = require("../models/expenseModel");
-const sequelize = require("../config/dbConfig");
 
 exports.purchasePremium = async (req, res) => {
   try {
