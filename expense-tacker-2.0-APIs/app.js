@@ -26,7 +26,7 @@ app.use("/api", expenseRouter);
 app.use("/purchase", purchaseRouter);
 app.use("/password", forgetPswRouter);
 
-
+// xyz comment
 sequelize
   .sync()
   // .sync({force: true})
