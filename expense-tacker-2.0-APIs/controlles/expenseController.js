@@ -40,8 +40,9 @@ exports.postExpense = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
+    console.log(req.query);
     const page = parseInt(req.query.page) || 1;
-    const perPage = 3;
+    const perPage = parseInt(req.query.perpage);
     const userInstance = await User.findByPk(req.user.id);
     const expenses = await userInstance.getExpenses({
       limit: perPage,
