@@ -40,16 +40,30 @@ exports.postExpense = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 3;
     const userInstance = await User.findByPk(req.user.id);
-    const expenses = await userInstance.getExpenses();
+    const expenses = await userInstance.getExpenses({
+      limit: perPage,
+      offset: (page - 1) * perPage,
+    });
+
+    // Count total expenses without fetching all
+    const totalCount = await userInstance.countExpenses();
+    const totalPages = Math.ceil(totalCount/perPage)
+
+    // Check if expenses exist
     if (expenses) {
-      res.status(200).json(expenses);
+      res.status(200).json({ expenses, totalPages });
+    } else {
+      res.status(404).json({ message: "No expenses found" });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "internal server error" });
   }
 };
+
 exports.getExpenseById = async (req, res) => {
   try {
     const userInstance = await User.findByPk(req.user.id);
