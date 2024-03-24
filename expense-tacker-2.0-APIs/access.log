@@ -1,0 +1,6 @@
+::1 - - [24/Mar/2024:10:09:34 +0000] "OPTIONS /user HTTP/1.1" 204 0 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+::1 - - [24/Mar/2024:10:09:34 +0000] "OPTIONS /api/expenses?page=1&perpage=4 HTTP/1.1" 204 0 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+::1 - - [24/Mar/2024:10:09:34 +0000] "OPTIONS /user/downloaded-files HTTP/1.1" 204 0 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+::1 - - [24/Mar/2024:10:09:34 +0000] "GET /user HTTP/1.1" 200 184 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+::1 - - [24/Mar/2024:10:09:35 +0000] "GET /user/downloaded-files HTTP/1.1" 200 2211 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+::1 - - [24/Mar/2024:10:09:35 +0000] "GET /api/expenses?page=1&perpage=4 HTTP/1.1" 200 410 "http://127.0.0.1:5500/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
