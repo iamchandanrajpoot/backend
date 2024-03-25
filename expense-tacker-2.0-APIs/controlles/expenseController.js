@@ -60,7 +60,7 @@ exports.getExpenses = async (req, res) => {
       res.status(404).json({ message: "No expenses found" });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "internal server error" });
   }
 };
@@ -77,6 +77,7 @@ exports.getExpenseById = async (req, res) => {
     res.satatus(500).json({ message: "internal server error" });
   }
 };
+
 exports.deleteExpenseById = async (req, res) => {
   const t = await sequelize.transaction();
   try {
@@ -117,7 +118,7 @@ exports.downloadExpense = async (req, res) => {
       res.status(201).json({ fileUrl: data.Location, success: true });
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).json({message: "internal server error"})
   }
 };
 
@@ -129,7 +130,6 @@ exports.getDownloadedfiles = async (req, res) => {
       res.status(200).json({ downloadFiles, success: true });
     }
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "internal server error" });
   }
 };

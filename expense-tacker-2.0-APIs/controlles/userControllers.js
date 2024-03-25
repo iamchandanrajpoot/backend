@@ -9,13 +9,11 @@ exports.postRegister = async (req, res) => {
       where: { email: email },
     });
     if (isAlreadyRegister) {
-      console.log("already a user");
       res.json({
         message: `already register with this email ${req.body.email}`,
       });
     } else {
       const hashPassword = await bcrypt.hash(password, 10);
-      console.log(hashPassword);
       await User.create({ name: name, email: email, password: hashPassword });
       res.json({ message: "succussfully register" });
     }
@@ -44,14 +42,13 @@ exports.postLogin = async (req, res) => {
                 .status(200)
                 .json({ message: "successfully login", token: token});
             } else {
-              console.log(err);
+              res.status(500).json({ message: "error during creatin token" });
             }
           }
         );
       }
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "internal server error" });
   }
 };
@@ -60,10 +57,9 @@ exports.getUser = async(req, res)=>{
   try {
   const user =   await User.findByPk(req.user.id);
   console.log("control comes inside getUser")
-  console.log(user)
   res.status(200).json(user);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({message: "internal server error"})
   }
 }

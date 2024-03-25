@@ -26,7 +26,7 @@ exports.forgetPsw = async (req, res) => {
       return res.send({ message: "wrong email" });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: "internal server error" });
   }
 };
@@ -61,7 +61,9 @@ exports.resetPassword = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
+    res.status(500).json({message: "internal server error"})
+
   }
 };
 
@@ -77,7 +79,7 @@ exports.updatePassword = async (req, res) => {
     const userInstance = await User.findOne({
       where: { id: userIdObj.userId },
     });
-    console.log(userInstance);
+    // console.log(userInstance);
     const hashedPsw = await bcrypt.hash(newpassword, 10);
     await userInstance.update({ password: hashedPsw });
 
@@ -85,7 +87,7 @@ exports.updatePassword = async (req, res) => {
       .status(201)
       .json({ message: "Successfully updated the password", success: true });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "internal server error", success: false });
   }
 };
